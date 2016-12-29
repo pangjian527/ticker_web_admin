@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta content="text/html;charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>彩票网 后台管理 用户列表 </title>
+    <link th:href="@{/style.css}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
+
+    <style type="text/css">
+
+        div.lottery_panel{
+            width: 600px;
+            margin: auto;
+            margin-top: 30px;
+            border: 1px solid #ccc;
+            padding: 20px 100px;
+        }
+
+        div.lottery_panel ul li{
+            height: 40px;
+            line-height: 35px;
+            float: left;
+        }
+
+        div.lottery_panel ul li label{
+            display: inline-block;
+            width: 80px;
+            text-align: right;
+            padding-right: 5px;
+            font-weight: bold;
+        }
+
+        div.lottery_panel ul li input{
+            height: 30px;
+            width: 200px;
+            text-indent: 10px;
+        }
+        a.add_bottom{
+            display: block;
+            width: 265px;
+            height: 40px;
+            background-color: #f3294f;
+            color: white;
+            text-align: center;
+            margin-left: 170px;
+            line-height: 40px;
+            font-size: 16px;
+            font-weight: 700;
+            margin-top: 10px;
+            border-radius: 3px;
+        }
+
+    </style>
+
+    <script type="text/javascript">
+
+        function saveObject(){
+            document.forms[0].submit();
+        }
+
+    </script>
+</head>
+<body>
+    <div class="content t_row_spit_panel">
+        <label class="t_row_spit">新增开奖</label>
+    </div>
+    <div class="lottery_panel">
+        <form action="/admin/base/data/save_lottery" method="post">
+            <ul>
+                <li>
+                    <label>年&nbsp;份:</label>
+                    <input name="year" value="2016"/>
+                </li>
+                <li>
+                    <label>期&nbsp;数:</label>
+                    <input name="stage"/>
+                </li>
+                <li>
+                    <label>开奖时间:</label>
+                    <input name="lotteryTime" placeholder="yyyy-MM-dd"/>
+                </li>
+                <li>
+                    <label>特&nbsp;码:</label>
+                    <input name="number"/>
+                </li>
+                <li>
+                    <label>平&nbsp;码1:</label>
+                    <input name="flatNumber1"/>
+                </li>
+                <li>
+                    <label>平&nbsp;码2:</label>
+                    <input name="flatNumber2"/>
+                </li>
+                <li>
+                    <label>平&nbsp;码3:</label>
+                    <input name="flatNumber3"/>
+                </li>
+                <li>
+                    <label>平&nbsp;码4:</label>
+                    <input name="flatNumber4"/>
+                </li>
+                <li>
+                    <label>平&nbsp;码5:</label>
+                    <input name="flatNumber5"/>
+                </li>
+                <li>
+                    <label>平&nbsp;码6:</label>
+                    <input name="flatNumber6"/>
+                </li>
+            </ul>
+        </form>
+        <div style="clear:both;"></div>
+        <a class="add_bottom" href="javascript:saveObject();">登录</a>
+    </div>
+</body>
+</html>

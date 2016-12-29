@@ -9,6 +9,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 
 /**
@@ -156,11 +158,13 @@ public  class ValidateCodeUtil {
      * 测试函数,默认生成到d盘
      * @param args
      */
-    public static void main(String[] args) {
-        ValidateCodeUtil vCode = new ValidateCodeUtil(160,40,5,150);
-        String path="/home/pangjian/111111112222.png";
-        System.out.println("data:image/jpg;base64,"+vCode.getBase64Code());
+    public static void main(String[] args) throws Exception {
+        //ValidateCodeUtil vCode = new ValidateCodeUtil(160,40,5,150);
+        //String path="/home/pangjian/111111112222.png";
+        //System.out.println("data:image/jpg;base64,"+vCode.getBase64Code());
         //vCode.write(path);
+
+        System.out.println();
     }
 
 }
