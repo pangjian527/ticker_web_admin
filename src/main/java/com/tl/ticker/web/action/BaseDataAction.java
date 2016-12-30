@@ -40,9 +40,23 @@ public class BaseDataAction {
 
         for (LotteryData lotteryData :searchResult.getResult()) {
             LotteryDataResult lotteryDataResult = LotteryDataResult.fromLotteryDataResult(lotteryData);
-            BaseData baseData = baseDataService.getBaseDataByNumber(token, lotteryData.getNumber() + "", 2016);
+            BaseData baseData = baseDataService.getBaseDataByNumber(token, lotteryData.getNumber() , 2016);
             lotteryDataResult.zodiacCode = baseData.getZodiacCode();
             lotteryDataResult.colorCode = baseData.getColorCode();
+
+            BaseData baseData1 = baseDataService.getBaseDataByNumber(token, lotteryData.getFlatNumber1(),lotteryData.getYear());
+            BaseData baseData2 = baseDataService.getBaseDataByNumber(token, lotteryData.getFlatNumber2(),lotteryData.getYear());
+            BaseData baseData3 = baseDataService.getBaseDataByNumber(token, lotteryData.getFlatNumber3(),lotteryData.getYear());
+            BaseData baseData4 = baseDataService.getBaseDataByNumber(token, lotteryData.getFlatNumber4(),lotteryData.getYear());
+            BaseData baseData5 = baseDataService.getBaseDataByNumber(token, lotteryData.getFlatNumber5(),lotteryData.getYear());
+            BaseData baseData6 = baseDataService.getBaseDataByNumber(token, lotteryData.getFlatNumber6(),lotteryData.getYear());
+
+            lotteryDataResult.colorCode1 = baseData1.getColorCode();
+            lotteryDataResult.colorCode2 = baseData2.getColorCode();
+            lotteryDataResult.colorCode3 = baseData3.getColorCode();
+            lotteryDataResult.colorCode4 = baseData4.getColorCode();
+            lotteryDataResult.colorCode5 = baseData5.getColorCode();
+            lotteryDataResult.colorCode6 = baseData6.getColorCode();
 
             listLotteryResult.add(lotteryDataResult);
         }
@@ -95,7 +109,7 @@ public class BaseDataAction {
         lotteryData.setYear(year);
         lotteryData.setStage(stage);
 
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse("2005-06-09");
+        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(lotterTime);
         lotteryData.setLotteryTime(date.getTime());
 
         lotteryData.setFlatNumber1(flatNumber1);
@@ -109,7 +123,32 @@ public class BaseDataAction {
 
         lotteryDataService.saveLotteryData(new ServiceToken(),lotteryData);
 
-        return ResultJson.returnSuccess("发表成功",model);
+        return ResultJson.returnSuccess("添加成功",model);
+    }
+
+    @RequestMapping("/admin/base/to_base_data")
+    public String toBaseData(){
+        return "basedata/add_base";
+    }
+
+    @RequestMapping("/admin/base/data/save_base_data")
+    public String saveBaseData(HttpServletRequest request,Model model) throws Exception{
+
+        int number = StrFunUtil.valueInt(request.getParameter("number"));
+        int year = StrFunUtil.valueInt(request.getParameter("year"));
+        String colorCode = request.getParameter("colorCode");
+        String zodiacCode = request.getParameter("zodiacCode");
+
+        BaseData baseData = new BaseData();
+        baseData.setYear(year);
+        baseData.setZodiacCode(zodiacCode);
+        baseData.setNumber(number);
+        baseData.setColorCode(colorCode);
+        baseData.setSeq(1);
+
+        baseDataService.saveBaseData(new ServiceToken(),baseData);
+
+        return ResultJson.returnSuccess("添加成功",model);
     }
 
     @Autowired

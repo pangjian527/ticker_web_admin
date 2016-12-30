@@ -2,6 +2,7 @@ package com.tl.ticker.web.action.entity;
 
 import com.tl.rpc.lottery.LotteryData;
 
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -22,9 +23,19 @@ public class LotteryDataResult {
     public int flatNumber4;
     public int flatNumber5;
     public int flatNumber6;
+
+    public String colorCode1;
+    public String colorCode2;
+    public String colorCode3;
+    public String colorCode4;
+    public String colorCode5;
+    public String colorCode6;
+
     public String zodiacCode;
 
     public String colorCode;
+
+    public String week ;
 
 
     public static LotteryDataResult fromLotteryDataResult(LotteryData lotteryData){
@@ -43,8 +54,18 @@ public class LotteryDataResult {
         entity.flatNumber4 = lotteryData.getFlatNumber4();
         entity.flatNumber5 = lotteryData.getFlatNumber5();
         entity.flatNumber6 = lotteryData.getFlatNumber6();
+        entity.week = getWeekOfDate(entity.lotteryTime);
 
         return entity;
+    }
+
+    public static String getWeekOfDate(Date date) {
+        String[] weekDaysName = { "星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六" };
+        String[] weekDaysCode = { "0", "1", "2", "3", "4", "5", "6" };
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        int intWeek = calendar.get(Calendar.DAY_OF_WEEK) - 1;
+        return weekDaysName[intWeek];
     }
 
 

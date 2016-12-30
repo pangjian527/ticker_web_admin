@@ -1,6 +1,8 @@
 package com.tl.ticker.web.action.entity;
 
 import com.tl.rpc.product.Product;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import java.util.Date;
 
@@ -50,5 +52,26 @@ public class ProductResult {
         result.probability = product.getProbability();
 
         return result;
+    }
+
+    public String getContent(){
+        JSONArray jsonArray = JSONArray.fromObject(this.expect);
+
+        StringBuilder content = new StringBuilder("");
+
+        for (int i=0 ;i<jsonArray.size();i++) {
+            JSONObject jsonObject = jsonArray.getJSONObject(i);
+            content.append("<div style='color:#333;height:25px;line-height:25px;font-weight: bold;'>");
+            content.append(jsonObject.getString("name")+"&nbsp;|&nbsp;");
+
+            JSONArray numbers = jsonObject.getJSONArray("numbers");
+
+            for (int j=0 ;j<numbers.size();j++){
+                content.append(numbers.getInt(j)).append("、");
+            }
+
+            content.append("</div>");
+        }
+        return content.toString();
     }
 }

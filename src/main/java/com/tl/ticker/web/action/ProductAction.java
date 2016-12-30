@@ -1,5 +1,7 @@
 package com.tl.ticker.web.action;
 
+import com.tl.rpc.base.BaseData;
+import com.tl.rpc.base.BaseDataService;
 import com.tl.rpc.common.ServiceToken;
 import com.tl.rpc.product.PRODUCTSTATUS;
 import com.tl.rpc.product.Product;
@@ -8,6 +10,7 @@ import com.tl.rpc.product.SearchProductResult;
 import com.tl.ticker.web.action.entity.PageResult;
 import com.tl.ticker.web.action.entity.ProductResult;
 import com.tl.ticker.web.action.entity.ResultJson;
+import com.tl.ticker.web.common.Constant;
 import com.tl.ticker.web.util.StrFunUtil;
 import net.sf.json.JSONObject;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
@@ -17,9 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by pangjian on 16-12-7.
@@ -51,6 +52,9 @@ public class ProductAction {
     @RequestMapping("/admin/product/post")
     public String postProduct(Model model ,String productId) throws Exception{
 
+        List<BaseData> baseDatas = baseDataService.searchBaseData(new ServiceToken(), Constant.CURRENT_YEAR);
+        Map<String, List<BaseData>> baseMap = groupBaseData(baseDatas);
+
         if(StringUtils.isNotBlank(productId)){
             Product product = productService.getByProductId(new ServiceToken(), productId);
             model.addAttribute("product",product);
@@ -58,7 +62,25 @@ public class ProductAction {
             model.addAttribute("product",new Product());
         }
 
+        model.addAttribute("baseMap",baseMap);
+
         return "product/post_product";
+    }
+
+    private Map<String,List<BaseData>> groupBaseData(List<BaseData> list){
+        Map<String,List<BaseData>> map = new HashMap<String, List<BaseData>>();
+
+        for (BaseData baseData : list) {
+            if(map.containsKey(baseData.getZodiacCode())){
+                map.get(baseData.getZodiacCode()).add(baseData);
+            }else{
+                List<BaseData> itemList = new ArrayList<BaseData>();
+                itemList.add(baseData);
+
+                map.put(baseData.getZodiacCode(),itemList);
+            }
+        }
+        return map;
     }
 
     @RequestMapping("/admin/product/save")
@@ -67,10 +89,6 @@ public class ProductAction {
                        String id,String mobile
             ,String expect,int virtualCount,String probability) throws Exception{
 
-        JSONObject object = new JSONObject();
-        object.element("name","龙");
-
-        expect = object.toString();
         Product product = null;
         ServiceToken token = new ServiceToken();
         if(StringUtils.isNotBlank(id)){
@@ -99,5 +117,7 @@ public class ProductAction {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private BaseDataService baseDataService;
 
 }

@@ -7,6 +7,9 @@
     <title>彩票网 后台管理 论坛发帖 </title>
     <link th:href="@{/style.css}" rel="stylesheet" type="text/css"/>
     <link href="../../static/style.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" th:src="@{/js/product.js}"></script>
+
+
 
     <style type="text/css">
 
@@ -128,17 +131,14 @@
             margin-top: 10px;
         }
 
+        ul li.select{
+            border:1px dashed red;
+            background-color:#f0f0f0;
+        }
 
 
     </style>
 
-    <script type="text/javascript">
-
-        function submit(){
-            document.forms[0].submit();
-        }
-
-    </script>
 
 </head>
 <body>
@@ -177,96 +177,18 @@
                 <dt>虚拟销量：</dt>
                 <dd>
                     <input name="virtualCount" th:value="${product.virtualCount}" />
+                    <input type="hidden" name="expect" id="expect"/>
                 </dd>
             </dl>
             <div style="clear:both;"></div>
         </div>
         <div>
-            <ul>
-                <li>
-                    <div>龙</div>
-                    <span class="green">1</span>
-                    <span class="blue">2</span>
-                    <span class="red">3</span>
-                    <span>4</span>
-                    <span>5</span>
-                </li>
-                <li>
-                    <div>马</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>猪</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>龙</div>
-                    <span class="green">1</span>
-                    <span class="blue">2</span>
-                    <span class="red">3</span>
-                    <span>4</span>
-                </li>
-                <li>
-                    <div>马</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>猪</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>龙</div>
-                    <span class="green">1</span>
-                    <span class="blue">2</span>
-                    <span class="red">3</span>
-                    <span>4</span>
-                </li>
-                <li>
-                    <div>马</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>猪</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>龙</div>
-                    <span class="green">1</span>
-                    <span class="blue">2</span>
-                    <span class="red">3</span>
-                    <span>4</span>
-                </li>
-                <li>
-                    <div>马</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>猪</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
+            <ul id="expect_panel">
+                <li th:each="baseData:${baseMap}" onclick="selectObject.call(this)" th:value="${baseData.key}">
+                    <div th:text="${baseData.key}">龙</div>
+                    <span th:each="itemBase:${baseData.value}"
+                          th:class="${itemBase.colorCode}"
+                          th:text="${itemBase.number}" th:value="${itemBase.number}">1</span>
                 </li>
             </ul>
             <div style="clear:both;"></div>

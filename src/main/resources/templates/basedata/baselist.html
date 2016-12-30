@@ -15,7 +15,7 @@
     <style type="text/css">
 
         div.base_data_left{
-            width:20%;
+            width:25%;
             float:left;
         }
         div.base_data_left div.title{
@@ -65,7 +65,7 @@
          }
 
          div.base_data_right{
-            width:80%;
+            width:75%;
             padding:0 10px;
             float:left;
          }
@@ -117,7 +117,7 @@
 
             <div class="title">
                 基础数据
-                <a href="">新增基础</a>
+                <a href="/admin/base/to_base_data">新增基础</a>
             </div>
             <table>
                 <thead>
@@ -145,8 +145,8 @@
             <table>
                 <thead>
                 <tr>
-                    <td>年份</td>
                     <td>期号</td>
+                    <td>年份</td>
                     <td>生肖</td>
                     <td>特码</td>
                     <td>平码</td>
@@ -171,7 +171,10 @@
                         <label th:text="${lottery.flatNumber5}"></label>、
                         <label th:text="${lottery.flatNumber6}"></label>
                     </td>
-                    <td>2016-12-29 星期六</td>
+                    <td>
+                        <label th:text="${#dates.format(lottery.lotteryTime,'yyy-MM-dd')}"></label>
+                        /<label th:text="${lottery.week}"></label>
+                    </td>
                 </tr>
                 </tbody>
             </table>

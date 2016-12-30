@@ -55,7 +55,7 @@
                 <tr th:each="product,productStat:${listResult}">
                     <td th:text="(${productStat.index}+1)">1</td>
                     <td th:text="${product.title}">九六马会心水论坛六肖王：→羊 蛇 兔 猪 马 龙→ 准吗？</td>
-                    <td th:text="${product.expect}"></td>
+                    <td th:utext="${product.content}"></td>
                     <td th:text="${product.mobile}">13535869614</td>
                     <td th:text="${#dates.format(product.createTime,'yyy-MM-dd HH:mm')}">2016-11-30</td>
                     <td th:text="${product.balance}"></td>
