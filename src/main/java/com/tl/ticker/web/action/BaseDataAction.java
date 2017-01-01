@@ -94,7 +94,7 @@ public class BaseDataAction {
         int number = StrFunUtil.valueInt(request.getParameter("number"));
         int year = StrFunUtil.valueInt(request.getParameter("year"));
         int stage = StrFunUtil.valueInt(request.getParameter("stage"));
-        String lotterTime = request.getParameter("lotterTime");
+        String lotteryTime = request.getParameter("lotteryTime");
 
         int flatNumber1 = StrFunUtil.valueInt(request.getParameter("flatNumber1"));
         int flatNumber2 = StrFunUtil.valueInt(request.getParameter("flatNumber2"));
@@ -109,7 +109,7 @@ public class BaseDataAction {
         lotteryData.setYear(year);
         lotteryData.setStage(stage);
 
-        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(lotterTime);
+        Date date = new SimpleDateFormat("yyyy-MM-dd").parse(lotteryTime);
         lotteryData.setLotteryTime(date.getTime());
 
         lotteryData.setFlatNumber1(flatNumber1);
