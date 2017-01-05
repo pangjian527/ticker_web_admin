@@ -87,7 +87,7 @@ public class ProductAction {
     public String save(Model model,String title,int year,
                        long balance,int stage,
                        String id,String mobile
-            ,String expect,int virtualCount,String probability) throws Exception{
+            ,String expect,int virtualCount,String probability,int limitCount) throws Exception{
 
         Product product = null;
         ServiceToken token = new ServiceToken();
@@ -109,6 +109,7 @@ public class ProductAction {
         product.setMobile(mobile);
         product.setProbability(probability);
         product.setVirtualCount(virtualCount);
+        product.setLimitCount(limitCount);
 
         productService.saveProduct(token,product);
 

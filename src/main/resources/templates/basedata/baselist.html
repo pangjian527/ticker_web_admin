@@ -124,6 +124,7 @@
                     <tr>
                         <td>生肖</td>
                         <td>号码</td>
+                        <td>年份</td>
                     </tr>
                 </thead>
                 <tbody>
@@ -132,6 +133,7 @@
                         <td><span th:each="baseItem:${basedata.value}" th:text="${baseItem.number}" th:class="${baseItem.colorCode}">
                             号码</span>
                         </td>
+                        <td>2017</td>
                     </tr>
                 </tbody>
             </table>

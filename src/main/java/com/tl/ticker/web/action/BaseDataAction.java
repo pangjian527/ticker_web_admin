@@ -30,11 +30,11 @@ public class BaseDataAction {
     public String execute(Model model, HttpSession session) throws Exception{
 
         ServiceToken token = new ServiceToken();
-        List<BaseData> baseDatas = baseDataService.searchBaseData(token, 2016);
+        List<BaseData> baseDatas = baseDataService.searchBaseData(token, 2017);
 
         Map<String,List<BaseData>> baseMap = groupBaseData(baseDatas);
 
-        SearchResult searchResult = lotteryDataService.searchLotteryData(token, 2016, 30, 0);
+        SearchResult searchResult = lotteryDataService.searchLotteryData(token,0, 30, 0);
 
         List<LotteryDataResult> listLotteryResult = new LinkedList<LotteryDataResult>();
 
