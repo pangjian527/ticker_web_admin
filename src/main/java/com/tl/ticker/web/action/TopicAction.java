@@ -1,5 +1,7 @@
 package com.tl.ticker.web.action;
 
+import com.tl.rpc.base.BaseData;
+import com.tl.rpc.base.BaseDataService;
 import com.tl.rpc.common.ServiceToken;
 import com.tl.rpc.consumer.Consumer;
 import com.tl.rpc.consumer.ConsumerService;
@@ -7,6 +9,7 @@ import com.tl.rpc.topic.*;
 import com.tl.ticker.web.action.entity.PageResult;
 import com.tl.ticker.web.action.entity.ResultJson;
 import com.tl.ticker.web.action.entity.TopicResult;
+import com.tl.ticker.web.common.Constant;
 import com.tl.ticker.web.util.StrFunUtil;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
@@ -15,9 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by pangjian on 16-11-30.
@@ -55,18 +56,39 @@ public class TopicAction {
     @RequestMapping("/admin/topic/post")
     public String postTopic(Model model,String topicId) throws Exception{
 
+        List<BaseData> baseDatas = baseDataService.searchBaseData(new ServiceToken(), Constant.CURRENT_YEAR);
+        Map<String, List<BaseData>> baseMap = groupBaseData(baseDatas);
+
         if(StringUtils.isNotBlank(topicId)){
             Topic topic = topicService.getByTopicId(new ServiceToken(), topicId);
-            model.addAttribute("topic",topic);
+            model.addAttribute("topic",TopicResult.fromTopicResult(topic));
         }else{
-            model.addAttribute("topic",new Topic());
+            model.addAttribute("topic",new TopicResult());
         }
+
+        model.addAttribute("baseMap",baseMap);
 
         return "topic/post_topic";
     }
 
+    private Map<String,List<BaseData>> groupBaseData(List<BaseData> list){
+        Map<String,List<BaseData>> map = new HashMap<String, List<BaseData>>();
+
+        for (BaseData baseData : list) {
+            if(map.containsKey(baseData.getZodiacCode())){
+                map.get(baseData.getZodiacCode()).add(baseData);
+            }else{
+                List<BaseData> itemList = new ArrayList<BaseData>();
+                itemList.add(baseData);
+
+                map.put(baseData.getZodiacCode(),itemList);
+            }
+        }
+        return map;
+    }
+
     @RequestMapping("/admin/topic/save")
-    public String save(Model model,String title,int year,long balance,int stage,String content,String id) throws Exception{
+    public String save(Model model,String title,int year,int stage,String content,String id,String mobile) throws Exception{
 
         Topic topic = null;
         ServiceToken token = new ServiceToken();
@@ -76,16 +98,19 @@ public class TopicAction {
         }else{
             topic = new Topic();
             topic.setCreateTime(new Date().getTime());
+            topic.setUpdateTime(new Date().getTime());
             topic.setType(TOPICTYPE.CHARGE);
             topic.setStatus(TOPICSTATUS.OPEN);
-            topic.setUserId("1");
+
         }
 
+        Consumer consumer = consumerService.getByMobile(token, mobile);
         topic.setContent(content);
         topic.setYear(year);
         topic.setStage(stage);
         topic.setTitle(title);
-        topic.setBalance(balance);
+        topic.setBalance(0);
+        topic.setUserId(consumer.getId());
 
         topicService.saveTopic(token,topic);
 
@@ -97,5 +122,7 @@ public class TopicAction {
 
     @Autowired
     private ConsumerService consumerService;
+    @Autowired
+    private BaseDataService baseDataService;
 
 }

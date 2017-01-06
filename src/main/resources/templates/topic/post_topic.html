@@ -6,8 +6,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>彩票网 后台管理 论坛发帖 </title>
     <link th:href="@{/style.css}" rel="stylesheet" type="text/css"/>
-    <link href="../../static/style.css" rel="stylesheet" type="text/css"/>
     <script src="//cdn.ckeditor.com/4.6.0/standard/ckeditor.js"></script>
+    <script type="text/javascript" th:src="@{/js/topic.js}"></script>
 
     <style type="text/css">
 
@@ -131,26 +131,15 @@
             margin: auto;
             margin-top: 10px;
         }
-
+        ul li.select{
+            border:1px dashed red;
+            background-color:#f0f0f0;
+        }
 
 
     </style>
 
     <script type="text/javascript">
-
-        function submit(){
-
-            var data = CKEDITOR.instances.editor1.getData();
-
-            document.getElementById("editor1").value = data;
-
-            if(data == ""){
-                alert("回复内容不能为空");
-                return ;
-            }
-
-            document.forms[0].submit();
-        }
 
     </script>
 
@@ -176,99 +165,21 @@
                 <dd>
                     <input  th:value="${topic.stage}" name="stage"/>
                 </dd>
-                <dt>价格：</dt>
+                <dt>发帖用户：</dt>
                 <dd>
-                    <input name="balance" th:value="${topic.balance}" />
+                    <input name="mobile" th:value="${topic.mobile}" />
+                    <input type="hidden" name="expect" id="expect"/>
                 </dd>
             </dl>
             <div style="clear:both;"></div>
         </div>
         <div>
-            <ul>
-                <li>
-                    <div>龙</div>
-                    <span class="green">1</span>
-                    <span class="blue">2</span>
-                    <span class="red">3</span>
-                    <span>4</span>
-                    <span>5</span>
-                </li>
-                <li>
-                    <div>马</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>猪</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>龙</div>
-                    <span class="green">1</span>
-                    <span class="blue">2</span>
-                    <span class="red">3</span>
-                    <span>4</span>
-                </li>
-                <li>
-                    <div>马</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>猪</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>龙</div>
-                    <span class="green">1</span>
-                    <span class="blue">2</span>
-                    <span class="red">3</span>
-                    <span>4</span>
-                </li>
-                <li>
-                    <div>马</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>猪</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>龙</div>
-                    <span class="green">1</span>
-                    <span class="blue">2</span>
-                    <span class="red">3</span>
-                    <span>4</span>
-                </li>
-                <li>
-                    <div>马</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
-                </li>
-                <li>
-                    <div>猪</div>
-                    <span>1</span>
-                    <span class="blue">2</span>
-                    <span>3</span>
-                    <span class="green">4</span>
+            <ul id="expect_panel">
+                <li th:each="baseData:${baseMap}" onclick="selectObject.call(this)" th:value="${baseData.key}">
+                    <div th:text="${baseData.key}">龙</div>
+                    <span th:each="itemBase:${baseData.value}"
+                          th:class="${itemBase.colorCode}"
+                          th:text="${itemBase.number}" th:value="${itemBase.number}">1</span>
                 </li>
             </ul>
             <div style="clear:both;"></div>
