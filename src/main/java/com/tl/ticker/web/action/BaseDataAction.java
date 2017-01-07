@@ -8,6 +8,7 @@ import com.tl.rpc.lottery.LotteryDataService;
 import com.tl.rpc.lottery.SearchResult;
 import com.tl.ticker.web.action.entity.LotteryDataResult;
 import com.tl.ticker.web.action.entity.ResultJson;
+import com.tl.ticker.web.common.Constant;
 import com.tl.ticker.web.util.StrFunUtil;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,12 @@ public class BaseDataAction {
     public String execute(Model model, HttpSession session) throws Exception{
 
         ServiceToken token = new ServiceToken();
-        List<BaseData> baseDatas = baseDataService.searchBaseData(token, 2017);
+        List<BaseData> baseDatas = baseDataService.searchBaseData(token, Constant.CURRENT_2017_YEAR);
+        List<BaseData> base2016Datas = baseDataService.searchBaseData(token, Constant.CURRENT_2016_YEAR);
 
         Map<String,List<BaseData>> baseMap = groupBaseData(baseDatas);
+
+        Map<String,List<BaseData>> base2016Map = groupBaseData(base2016Datas);
 
         SearchResult searchResult = lotteryDataService.searchLotteryData(token,0, 30, 0);
 
@@ -40,7 +44,7 @@ public class BaseDataAction {
 
         for (LotteryData lotteryData :searchResult.getResult()) {
             LotteryDataResult lotteryDataResult = LotteryDataResult.fromLotteryDataResult(lotteryData);
-            BaseData baseData = baseDataService.getBaseDataByNumber(token, lotteryData.getNumber() , 2016);
+            BaseData baseData = baseDataService.getBaseDataByNumber(token, lotteryData.getNumber() , lotteryData.getYear());
             lotteryDataResult.zodiacCode = baseData.getZodiacCode();
             lotteryDataResult.colorCode = baseData.getColorCode();
 
@@ -63,6 +67,7 @@ public class BaseDataAction {
 
         model.addAttribute("lotteryList",listLotteryResult);
         model.addAttribute("baseMap",baseMap);
+        model.addAttribute("base2016Map",base2016Map);
 
         return "basedata/baselist";
     }

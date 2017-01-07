@@ -14,7 +14,10 @@ function submit(){
             var numbers = [];
             for(var j=0 ;j<spanElements.length;j++){
                 var spanItem = spanElements[j];
-                numbers.push(spanItem.getAttribute("value"));
+                var selectArr = spanItem.getAttribute("select");
+                if(selectArr == "select"){
+                    numbers.push(spanItem.getAttribute("value"));
+                }
             }
 
             item.name =name ;
@@ -28,12 +31,22 @@ function submit(){
 }
 
 function selectObject (){
-    var clsName = this.className;
 
-    if(clsName == "select"){
-        this.className = "";
+    var iElements = this.getElementsByTagName("i");
+    if(iElements.length <=0){
+        this.appendChild(document.createElement("i"));
+        this.setAttribute("select","select");
     }else{
-        this.className = "select";
+        this.removeChild(iElements[0]);
+        this.setAttribute("select","");
+    }
+    var liElement = this.parentNode;
+
+    var total = liElement.getElementsByTagName("i").length;
+    if(total <= 0){
+        liElement.className = "";
+    }else{
+        liElement.className = "select";
     }
 
 }

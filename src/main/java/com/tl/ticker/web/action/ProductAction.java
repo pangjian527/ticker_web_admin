@@ -12,7 +12,6 @@ import com.tl.ticker.web.action.entity.ProductResult;
 import com.tl.ticker.web.action.entity.ResultJson;
 import com.tl.ticker.web.common.Constant;
 import com.tl.ticker.web.util.StrFunUtil;
-import net.sf.json.JSONObject;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +51,7 @@ public class ProductAction {
     @RequestMapping("/admin/product/post")
     public String postProduct(Model model ,String productId) throws Exception{
 
-        List<BaseData> baseDatas = baseDataService.searchBaseData(new ServiceToken(), Constant.CURRENT_YEAR);
+        List<BaseData> baseDatas = baseDataService.searchBaseData(new ServiceToken(), Constant.CURRENT_2017_YEAR);
         Map<String, List<BaseData>> baseMap = groupBaseData(baseDatas);
 
         if(StringUtils.isNotBlank(productId)){

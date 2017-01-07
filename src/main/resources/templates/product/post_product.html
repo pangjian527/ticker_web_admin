@@ -6,10 +6,8 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>彩票网 后台管理 论坛发帖 </title>
     <link th:href="@{/style.css}" rel="stylesheet" type="text/css"/>
-    <link href="../../static/style.css" rel="stylesheet" type="text/css"/>
     <script type="text/javascript" th:src="@{/js/product.js}"></script>
-
-
+    <link th:href="@{/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
 
     <style type="text/css">
 
@@ -69,7 +67,6 @@
         }
         ul li span{
             font-size:18px;
-            background-color:#c92121;
             color:white;
             display:inline-block;
             height:30px;
@@ -135,7 +132,20 @@
             border:1px dashed red;
             background-color:#f0f0f0;
         }
+        #expect_panel li span{
+            position:relative;
+        }
 
+        #expect_panel li span i{
+            display: block;
+            height: 10px;
+            width: 10px;
+            position: absolute;
+            right: 11px;
+            background-color: red;
+            bottom: -15px;
+            border-radius: 10px;
+        }
 
     </style>
 
@@ -188,11 +198,13 @@
         </div>
         <div>
             <ul id="expect_panel">
-                <li th:each="baseData:${baseMap}" onclick="selectObject.call(this)" th:value="${baseData.key}">
+                <li th:each="baseData:${baseMap}" th:value="${baseData.key}">
                     <div th:text="${baseData.key}">龙</div>
-                    <span th:each="itemBase:${baseData.value}"
+                    <span onclick="selectObject.call(this)" th:each="itemBase:${baseData.value}"
                           th:class="${itemBase.colorCode}"
-                          th:text="${itemBase.number}" th:value="${itemBase.number}">1</span>
+                           th:value="${itemBase.number}">
+                        <label th:text="${itemBase.number}"></label>
+                    </span>
                 </li>
             </ul>
             <div style="clear:both;"></div>

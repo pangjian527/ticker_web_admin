@@ -137,6 +137,25 @@
                     </tr>
                 </tbody>
             </table>
+
+            <table>
+                <thead>
+                <tr>
+                    <td>生肖</td>
+                    <td>号码</td>
+                    <td>年份</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="basedata:${base2016Map}">
+                    <td th:text="${basedata.key}">生肖</td>
+                    <td><span th:each="baseItem:${basedata.value}" th:text="${baseItem.number}" th:class="${baseItem.colorCode}">
+                            号码</span>
+                    </td>
+                    <td>2016</td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
         <div class="base_data_right">

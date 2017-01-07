@@ -15,7 +15,7 @@
 
         div.t_row_spit_panel a{
             display: block;
-            width: 180px;
+            width: 100px;
             height: 35px;
             background-color: #f3294f;
             color: white;
@@ -25,10 +25,28 @@
             font-weight: 700;
             border-radius: 3px;
             float: right;
-            margin-top: 5px
+            margin-top: 5px;
+            margin-left: 10px;
         }
 
     </style>
+    <script type="text/javascript">
+
+        function readCount(){
+            $.ajax({
+                url: "/admin/topic/read_count",
+                dataType:"json",
+                type:"post",
+                success: function(object){
+                   if(object.ok == true){
+                     alert("完成");
+                   }else{
+                     alert(object.result);
+                   }
+                }
+             });
+        }
+    </script>
 
 </head>
 <body>
@@ -36,6 +54,7 @@
     <div class="content t_row_spit_panel">
         <label class="t_row_spit">论坛列表</label>
         <a href="/admin/topic/post">发帖</a>
+        <a href="javascript:void()" onclick="readCount()">阅读+</a>
     </div>
     <div class="m_data_panel">
         <table cellpadding="0" cellspacing="0">

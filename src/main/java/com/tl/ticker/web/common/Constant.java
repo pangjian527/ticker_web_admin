@@ -5,7 +5,9 @@ package com.tl.ticker.web.common;
  */
 public class Constant {
 
-    public final static int CURRENT_YEAR = 2016;
+    public final static int CURRENT_2017_YEAR = 2017;
+
+    public final static int CURRENT_2016_YEAR = 2016;
 
     public final static String VALID_CODE = "validCode";
 

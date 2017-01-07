@@ -10,6 +10,7 @@ import com.tl.ticker.web.action.entity.PageResult;
 import com.tl.ticker.web.action.entity.ResultJson;
 import com.tl.ticker.web.action.entity.TopicResult;
 import com.tl.ticker.web.common.Constant;
+import com.tl.ticker.web.util.JsonUtil;
 import com.tl.ticker.web.util.StrFunUtil;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
 
@@ -34,7 +36,7 @@ public class TopicAction {
 
         ServiceToken token = new ServiceToken();
 
-        SearchTopicResult result = topicService.searchTopic(token, limit, offset, null);
+        SearchTopicResult result = topicService.searchTopic(token, limit, offset, null,null);
 
         List<TopicResult> listResult = new LinkedList<TopicResult>();
         for (Topic topic : result.getResult()) {
@@ -56,7 +58,7 @@ public class TopicAction {
     @RequestMapping("/admin/topic/post")
     public String postTopic(Model model,String topicId) throws Exception{
 
-        List<BaseData> baseDatas = baseDataService.searchBaseData(new ServiceToken(), Constant.CURRENT_YEAR);
+        List<BaseData> baseDatas = baseDataService.searchBaseData(new ServiceToken(), Constant.CURRENT_2017_YEAR);
         Map<String, List<BaseData>> baseMap = groupBaseData(baseDatas);
 
         if(StringUtils.isNotBlank(topicId)){
@@ -101,7 +103,6 @@ public class TopicAction {
             topic.setUpdateTime(new Date().getTime());
             topic.setType(TOPICTYPE.CHARGE);
             topic.setStatus(TOPICSTATUS.OPEN);
-
         }
 
         Consumer consumer = consumerService.getByMobile(token, mobile);
@@ -110,11 +111,45 @@ public class TopicAction {
         topic.setStage(stage);
         topic.setTitle(title);
         topic.setBalance(0);
+        topic.setReplyCount(0);
+        topic.setReadCount(0);
         topic.setUserId(consumer.getId());
 
         topicService.saveTopic(token,topic);
 
         return ResultJson.returnSuccess("发表成功",model);
+    }
+
+    @ResponseBody
+    @RequestMapping("/admin/topic/read_count")
+    public String readCount(Model model) throws Exception{
+
+        ServiceToken token = new ServiceToken();
+        final SearchTopicResult result = topicService.searchTopic(token, 1000, 0, null,null);
+
+        new Thread(){
+            @Override
+            public void run() {
+
+                List<Topic> topics = result.getResult();
+
+                for (Topic topic :topics) {
+                    try{
+
+                        int count  = (int)(Math.random()*1000);
+                        topic.setReadCount(topic.getReadCount()+count);
+                        topicService.saveTopic(new ServiceToken(),topic);
+
+                        Thread.currentThread().sleep(500);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+            }
+        }.start();
+
+        return JsonUtil.toString(new ResultJson(true));
     }
 
     @Autowired

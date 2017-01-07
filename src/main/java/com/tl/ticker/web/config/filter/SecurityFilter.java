@@ -33,13 +33,18 @@ public class SecurityFilter implements Filter{
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
+        String loginUrl = home + "/admin";
+
+        if("/".equals(uri)){
+            response.sendRedirect(loginUrl);
+            return ;
+        }
 
         if (request.getSession().getAttribute(Constant.SESSION_USER) != null) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
         }
 
-        String loginUrl = home + "/admin";
         if (uri.equals(loginUrl) || "/admin/login".equals(uri)) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
