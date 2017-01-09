@@ -49,9 +49,9 @@ public class ProductAction {
     }
 
     @RequestMapping("/admin/product/post")
-    public String postProduct(Model model ,String productId) throws Exception{
+    public String postProduct(Model model ,String productId,int year) throws Exception{
 
-        List<BaseData> baseDatas = baseDataService.searchBaseData(new ServiceToken(), Constant.CURRENT_2017_YEAR);
+        List<BaseData> baseDatas = baseDataService.searchBaseData(new ServiceToken(), year);
         Map<String, List<BaseData>> baseMap = groupBaseData(baseDatas);
 
         if(StringUtils.isNotBlank(productId)){
@@ -62,6 +62,7 @@ public class ProductAction {
         }
 
         model.addAttribute("baseMap",baseMap);
+        model.addAttribute("year",year);
 
         return "product/post_product";
     }

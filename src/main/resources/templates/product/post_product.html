@@ -149,6 +149,16 @@
 
     </style>
 
+    <script type="text/javascript">
+
+        function yearOnSelect(){
+            var obj = document.getElementById("yearSelect");
+            var index = obj.selectedIndex;
+            var year = obj.options[index].value;
+            window.location = "/admin/product/post?year="+year
+        }
+
+    </script>
 
 </head>
 <body>
@@ -163,9 +173,9 @@
             <dl>
                 <dt>年份：</dt>
                 <dd>
-                    <select name="year">
-                        <option>2016</option>
-                        <option>2017</option>
+                    <select onchange="yearOnSelect()" id="yearSelect" name="year">
+                        <option th:selected="(${year} eq 2016) ? 'true':'false'" value="2016">2016</option>
+                        <option th:selected="(${year} eq 2017) ? 'true':'false'" value="2017">2017</option>
                     </select>
                 </dd>
                 <dt>期数：</dt>
