@@ -1,32 +1,53 @@
 function submit(){
-    var liElements = document.getElementById('expect_panel').getElementsByTagName("li");
 
-    var items = [];
+    var obj = document.getElementById("tickerType");
+    var index = obj.selectedIndex;
+    var type = obj.options[index].value;
 
-    for(var i=0 ;i<liElements.length;i++){
-        var liItem = liElements[i];
-        if(liItem.className == "select"){
-            var item = new Object();
+    var objExpect = new Object();
+    objExpect.type = type;
 
-            var name = liItem.getAttribute("value");
+    if(type ==0){
+        var liElements = document.getElementById('expect_panel').getElementsByTagName("li");
 
-            var spanElements = liItem.getElementsByTagName("span");
-            var numbers = [];
-            for(var j=0 ;j<spanElements.length;j++){
-                var spanItem = spanElements[j];
-                var selectArr = spanItem.getAttribute("select");
-                if(selectArr == "select"){
-                    numbers.push(spanItem.getAttribute("value"));
+        var items = [];
+
+        for(var i=0 ;i<liElements.length;i++){
+            var liItem = liElements[i];
+            if(liItem.className == "select"){
+                var item = new Object();
+
+                var name = liItem.getAttribute("value");
+
+                var spanElements = liItem.getElementsByTagName("span");
+                var numbers = [];
+                for(var j=0 ;j<spanElements.length;j++){
+                    var spanItem = spanElements[j];
+                    var selectArr = spanItem.getAttribute("select");
+                    if(selectArr == "select"){
+                        numbers.push(spanItem.getAttribute("value"));
+                    }
                 }
+
+                item.name =name ;
+                item.numbers = numbers;
+
+                items.push(item);
             }
-
-            item.name =name ;
-            item.numbers = numbers;
-
-            items.push(item);
         }
+        objExpect.items = items ;
+    }else if (type ==1){
+        var sizeType = $('input[name="sizeType"]:checked').val();
+        objExpect.sizeType = sizeType;
+    }else if (type == 2){
+        var colorType = [];
+        $('input[name="colorType"]:checked').each(function(){
+           colorType.push($(this).val());
+        });
+        objExpect.colorType = colorType;
     }
-    document.getElementById("expect").value = JSON.stringify(items);
+
+    document.getElementById("expect").value = JSON.stringify(objExpect);
     document.forms[0].submit();
 }
 

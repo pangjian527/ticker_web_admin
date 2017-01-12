@@ -1,6 +1,7 @@
 package com.tl.ticker.web.action.entity;
 
 import com.tl.rpc.product.Product;
+import com.tl.ticker.web.common.Constant;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -55,23 +56,42 @@ public class ProductResult {
     }
 
     public String getContent(){
-        JSONArray jsonArray = JSONArray.fromObject(this.expect);
 
-        StringBuilder content = new StringBuilder("");
+        JSONObject object = JSONObject.fromObject(this.expect);
 
-        for (int i=0 ;i<jsonArray.size();i++) {
-            JSONObject jsonObject = jsonArray.getJSONObject(i);
-            content.append("<div style='color:#333;height:25px;line-height:25px;font-weight: bold;'>");
-            content.append(jsonObject.getString("name")+"&nbsp;|&nbsp;");
+        if(object.getInt("type") ==0){
+            JSONArray jsonArray = object.getJSONArray("items");
 
-            JSONArray numbers = jsonObject.getJSONArray("numbers");
+            StringBuilder content = new StringBuilder("");
 
-            for (int j=0 ;j<numbers.size();j++){
-                content.append(numbers.getInt(j)).append("、");
+            for (int i=0 ;i<jsonArray.size();i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                content.append("<span style='color:#333;height:25px;line-height:25px;font-weight: bold;'>");
+                content.append(jsonObject.getString("name")+"&nbsp;|&nbsp;<label style='color:red'>");
+
+                JSONArray numbers = jsonObject.getJSONArray("numbers");
+
+                for (int j=0 ;j<numbers.size();j++){
+                    content.append(numbers.getInt(j)).append("、");
+                }
+
+                content.append("</label></span>");
             }
+            return content.toString();
+        }else if (object.getInt("type") ==1){
+            String sizeType = object.getString("sizeType");
+            return "<span style='font-weight: bold;'>彩票类型（大小单双）：<label style='color:red'>"
+                    +Constant.getSizeType(sizeType)+"</label></span>";
+        }else if (object.getInt("type") == 2){
+            JSONArray array = object.getJSONArray("colorType");
 
-            content.append("</div>");
+            String result = "";
+            for (int i=0 ;i<array.size();i++){
+                result += Constant.getColorType(array.getString(i))+"、";
+            }
+            return "<span style='font-weight: bold;'>波色类型：<label style='color:red'>"+result+"</label></span>";
         }
-        return content.toString();
+
+        return "";
     }
 }

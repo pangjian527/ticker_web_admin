@@ -52,7 +52,10 @@ public class ProductAction {
     public String postProduct(Model model ,String productId,int year) throws Exception{
 
         List<BaseData> baseDatas = baseDataService.searchBaseData(new ServiceToken(), year);
+        //生肖分组
         Map<String, List<BaseData>> baseMap = groupBaseData(baseDatas);
+        //波色分组
+        Map<String, List<BaseData>> colorMap = gruopBaseDataByColor(baseDatas);
 
         if(StringUtils.isNotBlank(productId)){
             Product product = productService.getByProductId(new ServiceToken(), productId);
@@ -62,9 +65,26 @@ public class ProductAction {
         }
 
         model.addAttribute("baseMap",baseMap);
+        model.addAttribute("colorMap",colorMap);
         model.addAttribute("year",year);
 
         return "product/post_product";
+    }
+
+    private Map<String,List<BaseData>> gruopBaseDataByColor(List<BaseData> list){
+        Map<String,List<BaseData>> map = new HashMap<String, List<BaseData>>();
+
+        for (BaseData baseData : list) {
+            if(map.containsKey(baseData.getColorCode())){
+                map.get(baseData.getColorCode()).add(baseData);
+            }else{
+                List<BaseData> itemList = new ArrayList<BaseData>();
+                itemList.add(baseData);
+
+                map.put(baseData.getColorCode(),itemList);
+            }
+        }
+        return map;
     }
 
     private Map<String,List<BaseData>> groupBaseData(List<BaseData> list){

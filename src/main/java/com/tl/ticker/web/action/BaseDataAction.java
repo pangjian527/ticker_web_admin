@@ -3,13 +3,23 @@ package com.tl.ticker.web.action;
 import com.tl.rpc.base.BaseData;
 import com.tl.rpc.base.BaseDataService;
 import com.tl.rpc.common.ServiceToken;
+import com.tl.rpc.consumer.Consumer;
+import com.tl.rpc.consumer.ConsumerService;
 import com.tl.rpc.lottery.LotteryData;
 import com.tl.rpc.lottery.LotteryDataService;
 import com.tl.rpc.lottery.SearchResult;
+import com.tl.rpc.order.Order;
+import com.tl.rpc.order.OrderService;
+import com.tl.rpc.product.Product;
+import com.tl.rpc.product.ProductService;
+import com.tl.rpc.recharge.Recharge;
+import com.tl.rpc.recharge.RechargeService;
 import com.tl.ticker.web.action.entity.LotteryDataResult;
 import com.tl.ticker.web.action.entity.ResultJson;
 import com.tl.ticker.web.common.Constant;
 import com.tl.ticker.web.util.StrFunUtil;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -72,6 +82,21 @@ public class BaseDataAction {
         return "basedata/baselist";
     }
 
+    private Map<String,List<BaseData>> gruopBaseDataByColor(List<BaseData> list){
+        Map<String,List<BaseData>> map = new HashMap<String, List<BaseData>>();
+
+        for (BaseData baseData : list) {
+            if(map.containsKey(baseData.getColorCode())){
+                map.get(baseData.getColorCode()).add(baseData);
+            }else{
+                List<BaseData> itemList = new ArrayList<BaseData>();
+                itemList.add(baseData);
+
+                map.put(baseData.getColorCode(),itemList);
+            }
+        }
+        return map;
+    }
     private Map<String,List<BaseData>> groupBaseData(List<BaseData> list){
         Map<String,List<BaseData>> map = new HashMap<String, List<BaseData>>();
 
@@ -128,6 +153,9 @@ public class BaseDataAction {
 
         lotteryDataService.saveLotteryData(new ServiceToken(),lotteryData);
 
+        //执行退款
+        calcuRefund(year,stage,number);
+
         return ResultJson.returnSuccess("添加成功",model);
     }
 
@@ -156,9 +184,114 @@ public class BaseDataAction {
         return ResultJson.returnSuccess("添加成功",model);
     }
 
+    private void calcuRefund(final int year,final int stage,final int number){
+
+        new Thread(){
+            public void run() {
+                try{
+
+                    ServiceToken token = new ServiceToken();
+                    List<Product> list = productService.getProductByYearAndStage(token, year, stage);
+
+                    List<Product> refundList = new ArrayList<Product>();
+
+                    List<BaseData> baseDatas = baseDataService.searchBaseData(token, year);
+
+                    Map<String, List<BaseData>> colorMap = gruopBaseDataByColor(baseDatas);
+
+                    int i1 = number % 2;
+                    for (Product product : list) {
+                        String expect = product.getExpect();
+
+                        JSONObject object = JSONObject.fromObject(expect);
+                        boolean isRecund = true;
+                        if(object.getInt("type") == 0){
+                            JSONArray jsonArray = object.getJSONArray("items");
+                            for (int i=0 ;i<jsonArray.size();i++) {
+                                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                                JSONArray numbers = jsonObject.getJSONArray("numbers");
+                                for (int j=0 ;j<numbers.size();j++){
+                                    if(numbers.getInt(j) == number){
+                                        isRecund = false;
+                                    }
+                                }
+                            }
+                        }else if (object.getInt("type") == 1){
+                            String sizeType = object.getString("sizeType");
+
+                            if(sizeType.equals("big") && number>=25){
+                                isRecund = false;
+                            }else if (sizeType.equals("small") && number <= 24){
+                                isRecund = false;
+                            }else if (sizeType.equals("single") && i1 != 0 ){
+                                isRecund = false;
+                            }else if (sizeType.equals("double") && i1 == 0 ){
+                                isRecund = false;
+                            }
+                        }else if (object.getInt("type") == 2){
+                            // 波色
+                            JSONArray array = object.getJSONArray("colorType");
+
+                            for(int j=0 ;j<array.size();j++){
+                                List<BaseData> colorList = colorMap.get(array.getString(j));
+
+                                for (BaseData baseData : colorList) {
+                                    if (baseData.getNumber() == number)
+                                        isRecund = false;
+                                }
+                            }
+                        }
+
+                        if(isRecund){
+                            refundList.add(product);
+                        }
+                    }
+
+
+                    //执行退款
+                    for (Product product : refundList) {
+                        List<Order> orderList = orderService.getOrderByProductId(token, product.getId());
+
+                        for (Order order : orderList) {
+                            Consumer consumer = consumerService.getById(token, order.getUserId());
+
+                            long time = new Date().getTime();
+                            Recharge recharge = new Recharge();
+                            recharge.setAmount(0);
+                            recharge.setCreateTime(time);
+                            recharge.setSource("refund");
+                            recharge.setGiveAmount(order.getAmount());
+                            recharge.setUserId(consumer.getId());
+
+                            consumer.setBalance(consumer.getBalance()+order.getAmount());
+
+                            consumerService.saveConsumer(token,consumer);
+                            rechargeService.saveRecharge(token,recharge);
+                        }
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        }.start();
+    }
+
+
     @Autowired
     private BaseDataService baseDataService;
     @Autowired
     private LotteryDataService lotteryDataService;
+
+    @Autowired
+    private ProductService productService;
+
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private ConsumerService consumerService;
+    @Autowired
+    private RechargeService rechargeService;
 
 }

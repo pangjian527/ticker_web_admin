@@ -61,7 +61,7 @@
                     <td th:text="${product.balance}"></td>
                     <td th:text="${product.year}+'/'+${product.stage}"></td>
                     <td>
-                        <a th:href="'/admin/product/post?productId='+${product.id}" >编辑</a>
+                        <a th:href="@{/admin/product/post(productId=${product.id},year=${product.year})}" >编辑</a>
                         <a href="">公布</a>
                         <a href="">删除</a>
                     </td>

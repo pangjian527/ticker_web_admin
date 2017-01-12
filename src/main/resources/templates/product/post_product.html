@@ -8,6 +8,7 @@
     <link th:href="@{/style.css}" rel="stylesheet" type="text/css"/>
     <script type="text/javascript" th:src="@{/js/product.js}"></script>
     <link th:href="@{/font-awesome.min.css}" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
 
     <style type="text/css">
 
@@ -147,6 +148,49 @@
             border-radius: 10px;
         }
 
+        div.colorCode div.red span.number{
+            background-color:red;
+            color: white;
+            display: inline-block;
+            height: 30px;
+            width: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 15px;
+        }
+        div.colorCode div{
+            padding:10px;
+            padding-left: 40px;
+        }
+        div.colorCode div.blue span.number{
+            background-color:blue;
+            color: white;
+            display: inline-block;
+            height: 30px;
+            width: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 15px;
+        }
+        div.colorCode div.green span.number{
+            background-color:green;
+            color: white;
+            display: inline-block;
+            height: 30px;
+            width: 30px;
+            line-height: 30px;
+            text-align: center;
+            border-radius: 15px;
+        }
+
+        div.sizeCode{
+            height: 50px;
+            line-height: 50px;
+            padding-left: 95px;
+        }
+        div.sizeCode span{
+            padding-right: 30px;
+        }
     </style>
 
     <script type="text/javascript">
@@ -156,6 +200,27 @@
             var index = obj.selectedIndex;
             var year = obj.options[index].value;
             window.location = "/admin/product/post?year="+year
+        }
+
+        function tickTypeSelect(){
+
+            var obj = document.getElementById("tickerType");
+            var index = obj.selectedIndex;
+            var type = obj.options[index].value;
+
+            if(type == 0 ){
+                document.getElementById("randomCode").style.display = "";
+                document.getElementById("colorCode").style.display = "none";
+                document.getElementById("sizeCode").style.display = "none";
+            }else if (type ==1 ){
+                document.getElementById("randomCode").style.display = "none";
+                document.getElementById("colorCode").style.display = "none";
+                document.getElementById("sizeCode").style.display = "";
+            }else if (type == 2){
+                document.getElementById("randomCode").style.display = "none";
+                document.getElementById("colorCode").style.display = "";
+                document.getElementById("sizeCode").style.display = "none";
+            }
         }
 
     </script>
@@ -176,6 +241,14 @@
                     <select onchange="yearOnSelect()" id="yearSelect" name="year">
                         <option th:selected="(${year} eq 2016) ? 'true':'false'" value="2016">2016</option>
                         <option th:selected="(${year} eq 2017) ? 'true':'false'" value="2017">2017</option>
+                    </select>
+                </dd>
+                <dt>彩票类型：</dt>
+                <dd>
+                    <select name="tickerType" onchange="tickTypeSelect()" id="tickerType">
+                        <option value="0">随机</option>
+                        <option value="1">大小/单双</option>
+                        <option value="2">波色</option>
                     </select>
                 </dd>
                 <dt>期数：</dt>
@@ -206,7 +279,35 @@
             </dl>
             <div style="clear:both;"></div>
         </div>
-        <div>
+        <div class="sizeCode" id="sizeCode" style="display:none">
+            <span>
+                <input type="radio" value="big" name="sizeType"/>
+                <label>大</label>
+            </span>
+            <span>
+                <input type="radio" value="small" name="sizeType"/>
+                <label>小</label>
+            </span>
+            <span>
+                <input type="radio" value="single" name="sizeType"/>
+                <label>单</label>
+            </span>
+            <span>
+                <input type="radio" value="double" name="sizeType"/>
+                <label>双</label>
+            </span>
+        </div>
+        <div class="colorCode" id="colorCode"  style="display:none">
+            <div th:each="baseData:${colorMap}" th:class="${baseData.key}">
+                <input type="checkbox" th:value="${baseData.key}" name="colorType"/>
+                <label th:if="${baseData.key} eq 'red'">红波</label>
+                <label th:if="${baseData.key} eq 'blue'">蓝波</label>
+                <label th:if="${baseData.key} eq 'green'">绿波</label>
+                <span class="number" th:each="itemBase:${baseData.value}" th:text="${itemBase.number}">
+                </span>
+            </div>
+        </div>
+        <div id="randomCode">
             <ul id="expect_panel">
                 <li th:each="baseData:${baseMap}" th:value="${baseData.key}">
                     <div th:text="${baseData.key}">龙</div>
