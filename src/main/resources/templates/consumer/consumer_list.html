@@ -11,6 +11,29 @@
     <script type="text/javascript" th:src="@{/js/jquery-3.1.1.min.js}"></script>
     <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+    <style type="text/css">
+
+        div.consumer_search{
+            padding: 20px 10px 0 0;
+            text-align: center;
+        }
+        div.consumer_search input.q{
+            height: 35px;
+            width: 300px;
+            text-indent: 10px;
+        }
+
+        div.consumer_search button{
+            height: 35px;
+            width: 100px;
+            background: red;
+            border: 0;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+    </style>
 
     <script type="text/javascript">
 
@@ -45,6 +68,12 @@
     </script>
 </head>
 <body>
+
+    <div class="consumer_search" >
+        <form action="/admin/consumer/search" method="post">
+            <input class="q" name="mobile" th:value="${mobile}" placeholder="请输入电话号码"/><button type="submit">查询</button>
+        </form>
+    </div>
     <div class="content t_row_spit_panel">
         <label class="t_row_spit">我的订单</label>
     </div>

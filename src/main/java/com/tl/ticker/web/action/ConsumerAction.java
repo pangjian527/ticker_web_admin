@@ -30,12 +30,12 @@ import java.util.List;
 public class ConsumerAction {
 
     @RequestMapping("/admin/consumer/search")
-    public String search(Model model, HttpServletRequest request) throws Exception{
+    public String search(Model model, HttpServletRequest request,String mobile) throws Exception{
 
         int offset = StrFunUtil.valueInt(request.getParameter("offset"),0);
         int limit = StrFunUtil.valueInt(request.getParameter("limit"),15);
 
-        SearchResult searchResult = consumerService.searchConsumer(new ServiceToken(),limit, offset );
+        SearchResult searchResult = consumerService.searchConsumer(new ServiceToken(),limit, offset,mobile);
 
         List<ConsumerResult> listResult = new LinkedList<ConsumerResult>();
         for (Consumer consumer : searchResult.getResult()) {
@@ -43,8 +43,9 @@ public class ConsumerAction {
             listResult.add(result);
         }
 
-        String url ="/admin/consumer/search";
+        String url ="/admin/consumer/search?mobile="+mobile;
         model.addAttribute("listResult",listResult);
+        model.addAttribute("mobile",mobile);
         model.addAttribute("pageResult",new PageResult(searchResult.getTotalCount(),limit,offset,url));
 
         return "consumer/consumer_list";

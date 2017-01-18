@@ -3,14 +3,21 @@ package com.tl.ticker.web.action;
 import com.tl.rpc.base.BaseData;
 import com.tl.rpc.base.BaseDataService;
 import com.tl.rpc.common.ServiceToken;
+import com.tl.rpc.consumer.Consumer;
+import com.tl.rpc.consumer.ConsumerService;
+import com.tl.rpc.order.Order;
+import com.tl.rpc.order.OrderService;
 import com.tl.rpc.product.PRODUCTSTATUS;
 import com.tl.rpc.product.Product;
 import com.tl.rpc.product.ProductService;
 import com.tl.rpc.product.SearchProductResult;
+import com.tl.rpc.recharge.Recharge;
+import com.tl.rpc.recharge.RechargeService;
 import com.tl.ticker.web.action.entity.PageResult;
 import com.tl.ticker.web.action.entity.ProductResult;
 import com.tl.ticker.web.action.entity.ResultJson;
 import com.tl.ticker.web.common.Constant;
+import com.tl.ticker.web.util.JsonUtil;
 import com.tl.ticker.web.util.StrFunUtil;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
@@ -18,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.*;
 
@@ -136,9 +144,49 @@ public class ProductAction {
         return ResultJson.returnSuccess("发表成功",model);
     }
 
+    @ResponseBody
+    @RequestMapping("/admin/product/refund")
+    public String refundAmount(String productId) throws Exception{
+
+        ServiceToken token = new ServiceToken();
+
+        Product product = productService.getByProductId(token, productId);
+
+        List<Order> orderList = orderService.getOrderByProductId(token, product.getId());
+
+        for (Order order : orderList) {
+            Consumer consumer = consumerService.getById(token, order.getUserId());
+
+            long time = new Date().getTime();
+            Recharge recharge = new Recharge();
+            recharge.setAmount(0);
+            recharge.setCreateTime(time);
+            recharge.setSource("refund");
+            recharge.setGiveAmount(order.getAmount());
+            recharge.setUserId(consumer.getId());
+
+            consumer.setBalance(consumer.getBalance()+order.getAmount());
+
+            consumerService.saveConsumer(token,consumer);
+            rechargeService.saveRecharge(token,recharge);
+        }
+
+        product.setStatus(PRODUCTSTATUS.REFUND);
+        product.setUpdateTime(new Date().getTime());
+        productService.saveProduct(token,product);
+
+        return JsonUtil.toString(new ResultJson(true));
+    }
+
     @Autowired
     private ProductService productService;
     @Autowired
     private BaseDataService baseDataService;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    private ConsumerService consumerService;
+    @Autowired
+    private RechargeService rechargeService;
 
 }

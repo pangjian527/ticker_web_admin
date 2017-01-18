@@ -153,8 +153,8 @@ public class BaseDataAction {
 
         lotteryDataService.saveLotteryData(new ServiceToken(),lotteryData);
 
-        //执行退款
-        calcuRefund(year,stage,number);
+        //执行退款 暂时屏蔽
+        //calcuRefund(year,stage,number);
 
         return ResultJson.returnSuccess("添加成功",model);
     }

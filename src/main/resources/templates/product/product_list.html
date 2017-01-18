@@ -30,6 +30,29 @@
 
     </style>
 
+    <script type="text/javascript">
+
+        function refundAmount(productId){
+           if(confirm("确定退款吗，退款之后不可恢复")){
+
+            $.ajax({
+                url: "/admin/product/refund",
+                dataType:"json",
+                type:"post",
+                data:{"productId":productId},
+                success: function(object){
+                   if(object.ok == true){
+                     window.location.reload(true);
+                   }else{
+                     alert(object.result);
+                   }
+                }
+             });
+           }
+        }
+
+    </script>
+
 </head>
 <body>
 
@@ -43,12 +66,13 @@
             <tr>
                 <td width="50">NO.</td>
                 <td>标题</td>
-                <td>内容</td>
+                <td width="250">内容</td>
                 <td width="150">作者</td>
                 <td width="150">发表时间</td>
                 <td width="100">价格</td>
                 <td width="100">年份/期数</td>
-                <td width="150">操作</td>
+                <td width="100">状态</td>
+                <td width="90">操作</td>
             </tr>
             </thead>
             <tbody>
@@ -60,10 +84,14 @@
                     <td th:text="${#dates.format(product.createTime,'yyy-MM-dd HH:mm')}">2016-11-30</td>
                     <td th:text="${product.balance}"></td>
                     <td th:text="${product.year}+'/'+${product.stage}"></td>
+                    <td width="100">
+                        <label th:if="${product.status} eq 'REFUND'" style="color:red">已退款</label>
+                        <label th:if="${product.status} eq 'OPEN'" style="color:green">销售中</label>
+                        <label th:if="${product.status} eq 'SALE'" style="color:green">销售中</label>
+                    </td>
                     <td>
                         <a th:href="@{/admin/product/post(productId=${product.id},year=${product.year})}" >编辑</a>
-                        <a href="">公布</a>
-                        <a href="">删除</a>
+                        <a th:if="${product.status} eq 'SALE'" th:href="'javascript:refundAmount(\''+${product.id}+'\')'" href="javascript:refundAmount('${product.id}')">退款</a>
                     </td>
                 </tr>
             </tbody>
