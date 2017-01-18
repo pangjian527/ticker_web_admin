@@ -90,6 +90,14 @@ public class ProductResult {
                 result += Constant.getColorType(array.getString(i))+"、";
             }
             return "<span style='font-weight: bold;'>波色类型：<label style='color:red'>"+result+"</label></span>";
+        }else if (object.getInt("type") == 3){
+            JSONArray array = object.getJSONArray("zodiacType");
+
+            String result = "";
+            for (int i=0 ;i<array.size();i++){
+                result += array.getString(i)+"、";
+            }
+            return "<span style='font-weight: bold;'>生肖类型：<label style='color:red'>"+result+"</label></span>";
         }
 
         return "";

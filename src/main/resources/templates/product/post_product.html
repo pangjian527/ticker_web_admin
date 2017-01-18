@@ -191,6 +191,15 @@
         div.sizeCode span{
             padding-right: 30px;
         }
+
+        div.zodiacCode{
+            padding-left: 56px;
+            height: 50px;
+            line-height: 50px;
+        }
+        div.zodiacCode span{
+            margin-right: 15px
+        }
     </style>
 
     <script type="text/javascript">
@@ -212,15 +221,24 @@
                 document.getElementById("randomCode").style.display = "";
                 document.getElementById("colorCode").style.display = "none";
                 document.getElementById("sizeCode").style.display = "none";
+                document.getElementById("zodiacCode").style.display = "none";
             }else if (type ==1 ){
                 document.getElementById("randomCode").style.display = "none";
                 document.getElementById("colorCode").style.display = "none";
                 document.getElementById("sizeCode").style.display = "";
+                document.getElementById("zodiacCode").style.display = "none";
             }else if (type == 2){
                 document.getElementById("randomCode").style.display = "none";
                 document.getElementById("colorCode").style.display = "";
                 document.getElementById("sizeCode").style.display = "none";
+                document.getElementById("zodiacCode").style.display = "none";
+            }else if (type == 3){
+                document.getElementById("randomCode").style.display = "none";
+                document.getElementById("colorCode").style.display = "none";
+                document.getElementById("sizeCode").style.display = "none";
+                document.getElementById("zodiacCode").style.display = "";
             }
+
         }
 
     </script>
@@ -249,6 +267,7 @@
                         <option value="0">随机</option>
                         <option value="1">大小/单双</option>
                         <option value="2">波色</option>
+                        <option value="3">生肖</option>
                     </select>
                 </dd>
                 <dt>期数：</dt>
@@ -295,6 +314,13 @@
             <span>
                 <input type="radio" value="double" name="sizeType"/>
                 <label>双</label>
+            </span>
+        </div>
+        <div class="zodiacCode" id="zodiacCode" style="display:none">
+            <b>生肖：</b>
+            <span th:each="baseData:${baseMap}" >
+                <input type="checkbox" name="zodiacType" th:value="${baseData.key}"/>
+                <label th:text="${baseData.key}"></label>
             </span>
         </div>
         <div class="colorCode" id="colorCode"  style="display:none">

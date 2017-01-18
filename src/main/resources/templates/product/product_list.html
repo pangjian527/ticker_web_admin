@@ -51,6 +51,40 @@
            }
         }
 
+        function addVirtualCount(productId){
+
+            $.ajax({
+                url: "/admin/product/get",
+                dataType:"json",
+                type:"post",
+                data:{"productId":productId},
+                success: function(object){
+                   var virtualCount = prompt("修改虚拟销量",object.virtualCount);
+
+                   if(virtualCount){
+                        updateProuctCount(productId,virtualCount);
+                   }
+                }
+             });
+
+        }
+
+        function updateProuctCount(productId,virtualCount){
+            $.ajax({
+                url: "/admin/product/update_virtual_count",
+                dataType:"json",
+                type:"post",
+                data:{"productId":productId,virtualCount},
+                success: function(object){
+                   if(object.ok == true){
+                     alert("修改成功");
+                   }else{
+                     alert(object.result);
+                   }
+                }
+             });
+        }
+
     </script>
 
 </head>
@@ -72,7 +106,7 @@
                 <td width="100">价格</td>
                 <td width="100">年份/期数</td>
                 <td width="100">状态</td>
-                <td width="90">操作</td>
+                <td width="120">操作</td>
             </tr>
             </thead>
             <tbody>
@@ -91,6 +125,7 @@
                     </td>
                     <td>
                         <a th:href="@{/admin/product/post(productId=${product.id},year=${product.year})}" >编辑</a>
+                        <a th:href="'javascript:addVirtualCount(\''+${product.id}+'\')'" >销量</a>
                         <a th:if="${product.status} eq 'SALE'" th:href="'javascript:refundAmount(\''+${product.id}+'\')'" href="javascript:refundAmount('${product.id}')">退款</a>
                     </td>
                 </tr>

@@ -178,6 +178,28 @@ public class ProductAction {
         return JsonUtil.toString(new ResultJson(true));
     }
 
+    @ResponseBody
+    @RequestMapping("/admin/product/get")
+    public String get(Model model,String productId) throws Exception{
+        ServiceToken token = new ServiceToken();
+
+        Product  product = productService.getByProductId(token,productId);
+
+        return JsonUtil.toString(product);
+    }
+
+    @ResponseBody
+    @RequestMapping("/admin/product/update_virtual_count")
+    public String updateVirtualCount(Model model,String productId,int virtualCount) throws Exception{
+        ServiceToken token = new ServiceToken();
+
+        Product  product = productService.getByProductId(token,productId);
+        product.setVirtualCount(virtualCount);
+
+        productService.saveProduct(token,product);
+        return JsonUtil.toString(new ResultJson(true));
+    }
+
     @Autowired
     private ProductService productService;
     @Autowired

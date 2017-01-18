@@ -45,6 +45,12 @@ function submit(){
            colorType.push($(this).val());
         });
         objExpect.colorType = colorType;
+    }else if (type == 3){
+        var zodiacType = [];
+        $('input[name="zodiacType"]:checked').each(function(){
+           zodiacType.push($(this).val());
+        });
+        objExpect.zodiacType = zodiacType;
     }
 
     document.getElementById("expect").value = JSON.stringify(objExpect);

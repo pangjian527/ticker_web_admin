@@ -20,8 +20,9 @@ div.m_data_panel table tbody td{
 }
 
 div.m_data_panel table tbody td a{
-    font-size:14px;
-    padding:8px 5px;
+    font-size: 14px;
+    padding: 4px 2px;
+    border-radius: 10px;
 }
 
 div.m_data_panel table tbody td a:hover{
